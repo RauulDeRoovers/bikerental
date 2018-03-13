@@ -53,6 +53,6 @@ Practices
 
 How to run tests
 ----------------
-- Import solution into Visual Studio.
+- Import solution into Visual Studio (IntiveBikeRental/IntiveBikeRental.sln).
 - Compile solution (Ctrl+Shift+B).
 - Go to "Test" -> "Execute" -> "All tests" (Ctrl+R+,A).
