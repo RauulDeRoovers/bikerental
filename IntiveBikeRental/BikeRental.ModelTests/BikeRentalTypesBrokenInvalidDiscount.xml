@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<bikeRentalTypes>
+  <bikeRentalType
+    name="Family Week Rental For Three"
+    lengthInHours="168"
+    unitPrice="60"
+    bikesAmount="3">
+    <priceStrategy type="BikeRental.Model.DiscountPriceStrategy, BikeRental.Model, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" >
+      <parameters>
+        <parameter value="101"/>
+      </parameters>
+    </priceStrategy>
+  </bikeRentalType>
+  <bikeRentalType
+    name="Family Week Rental For Three"
+    lengthInHours="168"
+    unitPrice="60"
+    bikesAmount="3">
+    <priceStrategy type="BikeRental.Model.DiscountPriceStrategy, BikeRental.Model, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" >
+      <parameters>
+        <parameter value="0"/>
+      </parameters>
+    </priceStrategy>
+  </bikeRentalType>
+  <bikeRentalType
+    name="Family Week Rental For Three"
+    lengthInHours="168"
+    unitPrice="60"
+    bikesAmount="3">
+    <priceStrategy type="BikeRental.Model.DiscountPriceStrategy, BikeRental.Model, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" >
+      <parameters>
+        <parameter value="-1"/>
+      </parameters>
+    </priceStrategy>
+  </bikeRentalType>
+</bikeRentalTypes>

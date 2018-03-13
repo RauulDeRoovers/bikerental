@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<bikeRentalTypes>
+  <bikeRentalType
+    name="Hour Rental"
+    lengthInHours="1"
+    unitPrice="5"/>
+  <bikeRentalType
+    name="Day Rental"
+    lengthInHours="24"
+    unitPrice="20"/>
+  <bikeRentalType
+    name="Hour Rental"
+    lengthInHours="36"
+    unitPrice="15"/>
+  <bikeRentalType
+    name="Day Rental"
+    lengthInHours="48"
+    unitPrice="40"/>
+</bikeRentalTypes>
