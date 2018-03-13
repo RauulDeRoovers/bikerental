@@ -1,37 +1,58 @@
 Notes
 -----
 - I'm assuming promotion rentals accept any kind of rental, between 3 and 5 "units", with the sole condition of each "unit" being the same kind.
+- As a first step for improvement, we could add an XSD schema definition for the BikeRentalTypes in XML files. I didn't include it seems I believe it goes beyond the scope of the
+	exercise. The drawbacks of not having the XSD schema definition are visible when reading attributes and values which are not forced by schema (name, lengthInHours, etc.).
+- I've used Console as default log. We could improve it by injecting a logging component implementing a given interface.
+- The GeFamilyWeekRentalForThreeTest test method presents a small difference compared with other test methods: it provides a delta value for the Total Price calculation to deal 
+	with rounding.
+- Another improvement step would be to add test methods for Family Day/Week Rentals for Three/Four/Five. I've not included these since they do not add to code coverage. Bike Rental
+	Types, however, are included in the BikeRentalTypes.xml file.
 
 Design
 ------
-- We have a main class called "BikeRental" which holds the amount of hours for the given rental, along with the final price for the same.
-- To instantiate "BikeRental" we use "BikeRentalType". This class is used to hold all current available rental types (plus one disabled rental type for testing purposes).
-	The "BikeRentalType" can easily be replaced with similar classes if the domain is to be extended. The idea is to provide the "BikeRentalFactory" class with all available
-	rental configurations. This could be done through a configuration file, database, etc. I've selected the enum way for simplicity. A good practice would be to use a dependency
-	injection framework so we can provide a production configuration and use a test configuration separately, we could even change the implementation of the configuration provider
-	by just updating the specific dependency.
-- "BikeRentalType" supports individual or group rentals, with configuration for rental hour length and rental price, group size and and raw approximation to price calculation
-	strategies. I've used a default strategy being the base rental price and I've assumed all group rentals will use the discount price strategy. It's not difficult to replace
-	any of this strategies if we want them to be provided by a configuration object. The pricing strategy classes are "DefaultPriceStrategy" and "DiscountPriceStrategy". Both
-	concrete classes inherit from a base class called "BasePriceStrategy" which implements the "IPriceStrategy". "BasePriceStrategy" holds a reference to the "BikeRentalType"
-	each instance should use to calculate the final price. The "IPriceStrategy" simply indicates what each implementor should do, basically, calculate the final price - for
-	a given rental, under current scope -.
-- I've provided a "Half Day" rental as a demonstration of how the model could be leveraged by just adding configurations instead of new classes. At the same time, it's useful to
-	evaluate different paths in the "BikeRentalFactory".
-- "BikeRentalFactory" is the main point to interact with any UI. It provides methods to create each of the current required rentals plus a sample rental for testing purposes.
-	The factory helps us canalize all rental creation calls and by switching provided configuration we could have different sources for our rentals.
-- "IRental" interface is not 100% needed under this domain model, but it surely helps keeping things at a more abstract level if we wanted to add other rental types. As long as
-	we follow the "hour & price" contract, we could leverage and/or extend our model with any kind of rental.
+- The design considers three main projects: Contract, Model and Service.
+	* Contract: holds the interfaces that define the interaction between the different components and provide a means to extend the model and still comply with basic requirements.
+	* Model: holds all classes that represent our domain model.
+	* Service: holds a sole class that implements a means to read all available Bike Rental Types using XML files. We could add further classes retrieving available Bike Rental
+		Types from different sources.
+- Contract 
+	* IBikeRental: defines the base structure to be followed by our main domain model class, representing the Rental itself.
+	* IBikeRentalFactory: defines the base calls to get most of our supported Rentals. We should add a few to fully support our model:
+		+ IBikeRental GeFamilyHourRentalForFour();
+        + IBikeRental GeFamilyDayRentalForFour();
+        + IBikeRental GeFamilyWeekRentalForFour();
+		+ IBikeRental GeFamilyHourRentalForFive();
+        + IBikeRental GeFamilyDayRentalForFive();
+        + IBikeRental GeFamilyWeekRentalForFive();
+	* IBikeRentalTypesService: defines base format to follow when retrieving available Bike Rental Types.
+	* IPriceStrategy: defines base format to follow to calculate total price for Rentals.
+- Model
+	* BikeRental: main model class. Supports different Bike Amounts, Length in hours, Unit Price and Total Price. Depends on IPriceStrategy to calculate Total Price.
+	* BikeRentalFactory: provides a clear way for creating different Bike Rentals. Instead of forcing end "user" to know the specifics, it provides a more declarative interface.
+	* DefaultPriceStrategy: implements the default price calculation strategy, by returning the Unit Price value.
+	* DiscountPriceStrategy: implements a discount strategy using the recieved discount amount.
+- Service
+	* XmlBikeRentalTypesService: retrieves all available Bike Rental Types by using provided XML file.
+	
 
 Practices
 ---------
-- "BikeRentalFactory" is a common practice to ease access to resources by hiding specifics.
-- "IPriceStrategy" and classes deriving from "BasePriceStrategy" follow the "Strategy" pattern. The idea here is to calculate the final rental price under different conditions
-	or following different approaches. This might come in handy if different promotions were required.
-- "BikeRentalFactory" also uses maps instead of other older/visually uglier structures such as infinite "if-else" methods or "swtich" statements.
+- I've used a factory to ease BikeRental creation. It's a declarative approach for the user not to be forced to know the specifics. This way we can hide implementation if we
+	wanted to.
+- Several interfaces: even if the size of the exercise is small, by using interfaces we can easily change implementations. Even further, using a dependency injection framework,
+	we can provide different services and factories as long as they all implement the proper interface.
+- Inheritance: I've not used inheritance since I focused in model flexibility. By having a unique BikeRental class with an open declaration that supports all required features
+	(Bikes Amount, Length in hours, different Pricing strategies, etc.) we could easily add several Bike Rental Types by just providing them through an XML file (in the example
+	provided). This way, we can add Bike Rental Types "on the fly" without having to re-deploy any component. Furthermore, if we needed other Pricing Strategies, we would only 
+	have to add it to Model project and re-deploy the Model class library, the reference this new class in the "priceStrategy" element's "type" attribute. Since we are creating
+	the Price Strategy using reflection, we can provide any amount of parameters. In the example, we privded just one, since it is all it takes to create an instance of the 
+	DiscountPriceStrategy class.
+- I've used AxoCover extension to check Code Coverage.
+
 
 How to run tests
 ----------------
-- In AndroidStudio, import classes and interfaces.
-- Right-click over "BikeRentalUnitTest" under "com.example.raderoovers.bikerental (test)".
-- Click on "Run 'BikeRentalUnitTest'".
+- Import solution into Visual Studio.
+- Compile solution (Ctrl+Shift+B).
+- Go to "Test" -> "Execute" -> "All tests" (Ctrl+R+,A).

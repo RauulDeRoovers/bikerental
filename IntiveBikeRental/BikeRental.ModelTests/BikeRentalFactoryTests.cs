@@ -9,11 +9,6 @@ namespace BikeRental.Model.Tests
     [TestClass()]
     public class BikeRentalFactoryTests
     {
-        //TODO: create xsd schema definition from xml
-        //TODO: i assume console is log
-        // TODO: handle false result
-        //TODO: comment on the 0.00000001 for GeFamilyWeekRentalForThreeTest
-        //TODO: add tests for Family Day/Week Rentals for Three/Four/Five
         private IBikeRentalFactory bikeRentalFactory;
 
         [TestInitialize]
